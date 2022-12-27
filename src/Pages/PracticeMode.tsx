@@ -1,13 +1,36 @@
-import Map from '../Components/Map';
+import { useEffect, useState } from 'react';
 import Timer from '../Components/Timer';
-import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import './PracticeMode.css';
 
-const render = (status: Status) => {
-  return <h1>{status}</h1>;
-};
+const places = [
+  'Leonia, NJ',
+  'Las Vegas, NV',
+  'San Francisco, CA',
+  'San Jose, Costa Rica',
+  'Melbourne, Australia',
+]
 
-const PracticeMode: React.FC = () => {
+const PracticeMode = () => {
+  const [points, setPoints] = useState<Array<string>>(new Array(2).fill(""));
+
+  function generateRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min) + min);
+  }
+
+  useEffect(() => {
+    function getPlaces() {
+      setPoints((prev)  => {
+        const copy = [...prev];
+        return copy.map((num, i) => {
+          let min: number = places.length - Math.floor(places.length/(i+1));
+          let max: number = Math.ceil(places.length/2 * (i+1)) - 1;
+          return places[generateRandomNumber(min, max)];
+        })
+      });
+    }
+    getPlaces();
+  },[])
+
   return (
     <div>
       <span>Round 1</span>
@@ -20,10 +43,15 @@ const PracticeMode: React.FC = () => {
         </select>
         <button>Guess!</button>
       </div>
-      <div className="map-container">
-        <Wrapper apiKey={process.env.REACT_APP_API_KEY ?? ""} render={render}>
-          <Map />
-        </Wrapper>
+      <div className="destinations">
+        {points.map((point) => {
+          return (
+            <div>
+              <div>{point}</div>
+              <img alt="origin" src={`https://maps.googleapis.com/maps/api/staticmap?size=300x300&markers=${point}&key=${process.env.REACT_APP_API_KEY}`} />
+            </div>
+          )
+        })}
       </div>
     </div>
   )

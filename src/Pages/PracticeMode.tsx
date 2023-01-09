@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import Timer from '../Components/Timer';
+import GuessInput from '../Components/GuessInput';
+import Results from '../Components/Results';
 import './PracticeMode.css';
 import axios from 'axios';
 
@@ -13,6 +15,9 @@ const places = [
 
 const PracticeMode = () => {
   const [points, setPoints] = useState<Array<string>>(new Array(2).fill(""));
+  const [resultsShown, setResultsShown] = useState(false);
+  const [guess, setGuess] = useState(0);
+  const [distActual, setDistActual] = useState(0);
 
   function generateRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min) + min);
@@ -47,7 +52,6 @@ const PracticeMode = () => {
     const coord1: google.maps.LatLngLiteral = await geoLocation(points[0]).then((coords) => coords);
     const coord2: google.maps.LatLngLiteral = await geoLocation(points[1]).then((coords) => coords);
 
-    
     coord1.lat *= Math.PI / 180;
     coord1.lng *= Math.PI / 180;    
     coord2.lat *= Math.PI / 180;
@@ -65,21 +69,14 @@ const PracticeMode = () => {
     // Radius of earth: 6371 kilometers, 3956 miles
     let r = 3956;
 
-    return c * r;
+    setDistActual(c * r);
   }
 
   return (
     <div>
       <span>Round 1</span>
       <Timer />
-      <div className="guess">
-        <input type="text"></input>
-        <select>
-          <option>mi</option>
-          <option>km</option>
-        </select>
-        <button onClick={getDistance}>Guess!</button>
-      </div>
+      <GuessInput getDistance={getDistance} setGuess={setGuess} toggleResults={setResultsShown} />
       <div className="destinations">
         {points.map((point,i) => {
           return (
@@ -90,6 +87,7 @@ const PracticeMode = () => {
           )
         })}
       </div>
+      {resultsShown && <Results answer={distActual} guess={guess} />}
     </div>
   )
 }

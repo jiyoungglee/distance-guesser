@@ -1,13 +1,22 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const Timer = () => {
+type TimerProps = {
+  endRound: boolean;
+}
+
+const Timer = ({ endRound }:TimerProps) => {
   const [time, setTime] = useState(30);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (time > 0) {
-      setTimeout(() => {setTime(time - 1)}, 1000);
+    if (time > 0 && !endRound) {
+      intervalRef.current = setInterval(() => {setTime(prev => prev - 1)}, 1000);
     }
-  },[time]);
+    return () => {
+      clearInterval(intervalRef.current as NodeJS.Timeout);
+    };
+
+  },[time, endRound]);
 
   return (
     <div>

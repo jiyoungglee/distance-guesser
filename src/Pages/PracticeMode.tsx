@@ -15,7 +15,7 @@ const places = [
 
 const PracticeMode = () => {
   const [points, setPoints] = useState<Array<string>>(new Array(2).fill(""));
-  const [resultsShown, setResultsShown] = useState(false);
+  const [endRound, setEndRound] = useState(false);
   const [guess, setGuess] = useState(0);
   const [distActual, setDistActual] = useState(0);
 
@@ -75,8 +75,8 @@ const PracticeMode = () => {
   return (
     <div>
       <span>Round 1</span>
-      <Timer />
-      <GuessInput getDistance={getDistance} setGuess={setGuess} toggleResults={setResultsShown} />
+      <Timer endRound={endRound} />
+      <GuessInput getDistance={getDistance} setGuess={setGuess} toggleResults={setEndRound} endRound={endRound} />
       <div className="destinations">
         {points.map((point,i) => {
           return (
@@ -87,7 +87,7 @@ const PracticeMode = () => {
           )
         })}
       </div>
-      {resultsShown && <Results answer={distActual} guess={guess} />}
+      {endRound && <Results answer={distActual} guess={guess} />}
     </div>
   )
 }

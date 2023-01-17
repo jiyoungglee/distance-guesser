@@ -1,0 +1,8 @@
+.map-container {
+  height: 50vh;
+}
+
+.destinations {
+  display: flex;
+  justify-content: space-evenly;
+}

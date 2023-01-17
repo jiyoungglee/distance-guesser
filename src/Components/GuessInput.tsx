@@ -1,24 +1,21 @@
-import { useState } from "react";
-
 type GuessProps = {
   getDistance: () => void;
-  setGuess: React.Dispatch<React.SetStateAction<number>>;
+  guess: string;
+  setGuess: React.Dispatch<React.SetStateAction<string>>;
   toggleResults: React.Dispatch<React.SetStateAction<boolean>>;
   endRound: boolean;
 }
 
-const GuessInput = ({ getDistance, setGuess, toggleResults, endRound }: GuessProps) => {
-  const [text, setText] = useState("");
+const GuessInput = ({ getDistance, guess, setGuess, toggleResults, endRound }: GuessProps) => {
 
   function onSubmit() {
     toggleResults(true);
     getDistance();
-    setGuess(Number(text));
   }
 
   return (
     <div className="guess">
-      <input type="number" min="0" onChange={(event) => setText(event.target.value)} value={text} disabled={endRound} />
+      <input type="number" min="0" onChange={(event) => setGuess(event.target.value)} value={guess} disabled={endRound} />
       <select disabled={endRound}>
         <option>mi</option>
         <option>km</option>

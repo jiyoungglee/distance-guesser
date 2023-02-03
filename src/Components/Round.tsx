@@ -23,11 +23,16 @@ type RoundProps = {
 };
 
 const Round = ({ round, nextRound }: RoundProps) => {
+  // Time left in Round
   const [time, setTime] = useState(30);
+  // Origin and Destination Points
   const [points, setPoints] = useState<Array<string>>(new Array(2).fill(""));
+  // Round playing or over
   const [endRound, setEndRound] = useState(false);
+  // User Inputs
   const [guess, setGuess] = useState("");
   const [distActual, setDistActual] = useState(0);
+  const [distUnit, setDistUnit] = useState("mi");
 
   function generateRandomNumber(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min) + min);
@@ -77,9 +82,9 @@ const Round = ({ round, nextRound }: RoundProps) => {
     let c = 2 * Math.asin(Math.sqrt(a));
 
     // Radius of earth: 6371 kilometers, 3956 miles
-    let r = 3956;
+    let r = distUnit==="mi" ? 3956 : 6371;
 
-    setDistActual(c * r);
+    setDistActual(Math.floor(c * r));
   }
 
   function reset() {
@@ -93,7 +98,7 @@ const Round = ({ round, nextRound }: RoundProps) => {
     <div>
       <span>Round {round}</span>
       <Timer endRound={endRound} setEndRound={setEndRound} time={time} countdown={() => setTime(prev => prev - 1)} />
-      <GuessInput getDistance={getDistance} guess={guess} setGuess={setGuess} toggleResults={setEndRound} endRound={endRound} />
+      <GuessInput getDistance={getDistance} guess={guess} setGuess={setGuess} toggleResults={setEndRound} endRound={endRound} setDistUnit={setDistUnit} />
       <div className="destinations">
         {points.map((point,i) => {
           return (
@@ -104,7 +109,7 @@ const Round = ({ round, nextRound }: RoundProps) => {
           )
         })}
       </div>
-      {endRound && <Results answer={distActual} guess={guess} nextRound={reset} />}
+      {endRound && <Results answer={distActual} guess={guess} nextRound={reset} distUnit={distUnit} />}
     </div>
   )
 }
